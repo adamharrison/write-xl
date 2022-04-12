@@ -1,0 +1,3 @@
+[submodule "android/lite-xl-simplified"]
+	path = android/lite-xl-simplified
+	url = git@github.com:adamharrison/lite-xl-simplified.git
