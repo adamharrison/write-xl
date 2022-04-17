@@ -7,12 +7,13 @@ Write-XL is a set of plugins that operates overtop of lite-xl. It's designed to 
 * A more word-like **color** scheme.
 * An automatic configuration of line wrapping and document setup to be more word-like.
 * Keybinds for standard stuff like bolding, italicizing, and underlining (`ctrl`+`b`, `ctrl`+`i`, `ctrl`+`u`).
+* Spellchecker
+* Synonyms
+* Jump to Chapter
 
 ## TODO
 
-* Add in a spellchecker that works with markdown.
-* Speed up the opening of large documents.
-* Jump to Chapter
+* Chapter Navigation
 * Automatic Chapter Summaries
 * Side-by-Side Outline Reading
 * Using `git` as a track changes method (because, let's be real, track changes is shit, normally; and `git` is one of the most used softwares on the planet).
