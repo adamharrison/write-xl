@@ -11,8 +11,40 @@ Write-XL is a set of plugins that operates overtop of lite-xl. It's designed to 
 * Synonyms
 * Jump to Chapter
 
+## Building
+
+1. `source android/env.sh`
+2. `cd android/com.litexl.writexl`
+3. `./gradlew installDebug`
+
+## Android Notes
+
+Things I had to do to get this godawful monstrosity working:
+
+1. Not much for base lite.
+2. For libgit2, I had to:
+  * Patch in getloadavg into the build; specifically into src/rand.c.
+  
+  ```c
+    #include <sys/sysinfo.h>
+    
+    int getloadavg(double averages[], int n) {
+      if (n < 0) return -1;
+      if (n > 3) n = 3;
+      struct sysinfo si;
+      if (sysinfo(&si) == -1) return -1;
+      for (int i = 0; i < n; ++i) {
+        averages[i] = (double)(si.loads[i]) / (double)(1 << SI_LOAD_SHIFT);
+      }
+      return n;
+    }
+  ```
+
 ## TODO
 
+* Git Integration
+	Specifically, I want to have git as an executable the APK can access, and use. This would allow basic pushing/pulling/cloning through a github repo to save files.
+	It looks like it's gonna be complex to support `ssh` authentication. So unless you have `ssh` installed on your phone, we're going to only support https.
 * Chapter Navigation
 * Automatic Chapter Summaries
 * Side-by-Side Outline Reading

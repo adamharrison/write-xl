@@ -4,3 +4,26 @@
 [submodule "lite-xl-plugins"]
 	path = lite-xl-plugins
 	url = git@github.com:lite-xl/lite-xl-plugins.git
+[submodule "android/git"]
+	path = android/git
+	url = https://github.com/git/git
+	shallow = true
+[submodule "android/openssh"]
+	path = android/openssh
+	url = https://android.googlesource.com/platform/external/openssh
+[submodule "android/openssl"]
+	path = android/openssl
+	url = git@github.com:openssl/openssl.git
+[submodule "android/curl"]
+	path = android/curl
+	url = git@github.com:curl/curl.git
+	shallow = true
+[submodule "android/expat"]
+	path = android/expat
+	url = https://android.googlesource.com/platform/external/expat
+[submodule "android/libgit2"]
+	path = android/libgit2
+	url = git@github.com:libgit2/libgit2.git
+[submodule "android/openssl-cmake"]
+	path = android/openssl-cmake
+	url = git@github.com:janbar/openssl-cmake.git

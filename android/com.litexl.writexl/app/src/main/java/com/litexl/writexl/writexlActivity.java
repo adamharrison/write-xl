@@ -21,7 +21,10 @@ public class writexlActivity extends SDLActivity {
     protected void onCreate(Bundle savedInstanceState) {
         String prefix = getExternalFilesDir(null) + "";
         String userdir = getExternalFilesDir("user") + "";
+        File file = new File(getExternalFilesDir("files") + "");
         try {
+            if (!file.exists() && !file.mkdirs())
+                throw new IOException("Can't make directory " + file.getPath());
             copyDirectoryOrFile(getAssets(), "data", getExternalFilesDir("share") + "/lite-xl");
             copyDirectoryOrFile(getAssets(), "user", userdir + "/lite-xl");
         } catch (IOException e) {
@@ -43,6 +46,12 @@ public class writexlActivity extends SDLActivity {
             controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
             controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         }
+    }
+    
+    protected String[] getArguments() {
+        String[] args = new String[1];
+        args[0] = getExternalFilesDir("files") + "";
+        return args;
     }
     
     private void copyDirectoryOrFile(AssetManager assetManager, String source, String target) throws IOException {

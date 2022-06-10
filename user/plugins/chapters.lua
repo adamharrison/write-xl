@@ -67,8 +67,10 @@ function Doc:raw_insert(line, col, text, undo_stack, time)
   old_doc_insert(self, line, col, text, undo_stack, time)
   if old_lines ~= #self.lines then 
     local start = get_chapter(self, line)
-    for i = start + 1, #self.chapter_lines do
-      self.chapter_lines[i] = self.chapter_lines[i] + (#self.lines - old_lines)
+    if start then
+      for i = start + 1, #self.chapter_lines do
+        self.chapter_lines[i] = self.chapter_lines[i] + (#self.lines - old_lines)
+      end
     end
   end
 end
@@ -79,8 +81,10 @@ function Doc:raw_remove(line1, col1, line2, col2, undo_stack, time)
   old_doc_remove(self, line1, col1, line2, col2, undo_stack, time)
   if old_lines ~= #self.lines then 
     local start = get_chapter(self, line1)
-    for i = start + 1, #self.chapter_lines do
-      self.chapter_lines[i] = self.chapter_lines[i] + (#self.lines - old_lines)
+    if start then
+      for i = start + 1, #self.chapter_lines do
+        self.chapter_lines[i] = self.chapter_lines[i] + (#self.lines - old_lines)
+      end
     end
   end
 end

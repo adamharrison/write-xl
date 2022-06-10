@@ -23,15 +23,15 @@ android {
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
-            ndkBuild {
-                arguments "APP_PLATFORM=android-21"
-                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            //ndkBuild {
+            //    arguments "APP_PLATFORM=android-21"
+            //    abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            //}
+            cmake {
+                 arguments "-DANDROID_APP_PLATFORM=android-21", "-DANDROID_STL=c++_static"
+                  abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+                 abiFilters 'arm64-v8a'
             }
-            // cmake {
-            //     arguments "-DANDROID_APP_PLATFORM=android-16", "-DANDROID_STL=c++_static"
-            //     // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-            //     abiFilters 'arm64-v8a'
-            // }
         }
     }
     buildTypes {
@@ -49,12 +49,12 @@ android {
             jniLibs.srcDir 'libs'
         }
         externalNativeBuild {
-            ndkBuild {
-                path 'jni/Android.mk'
-            }
-            // cmake {
-            //     path 'jni/CMakeLists.txt'
+            // ndkBuild {
+            //    path 'jni/Android.mk'
             // }
+            cmake {
+               path 'jni/CMakeLists.txt'
+            }
         }
        
     }
@@ -78,3 +78,13 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 }
+
+task runNdkBuild(type: Exec) {
+    def ndkDir = android.ndkDirectory
+    executable = "$ndkDir/ndk-build"
+    args = ['NDK_PROJECT_PATH=build/intermediates/ndkBuild',
+            'APP_BUILD_SCRIPT=jni/Android.mk',
+            'NDK_APPLICATION_MK=jni/Application.mk']
+}
+
+preBuild.dependsOn runNdkBuild
