@@ -8,7 +8,7 @@ local style = require "core.style"
 local common = require "core.common"
 local DocView = require "core.docview"
 
-local document_width = 900
+local document_width = 900 * SCALE
 
 core.reload_module('colors.document')
 
@@ -16,6 +16,13 @@ config.plugins.autocomplete = false
 config.plugins.treeview = false
 config.highlight_current_line = false
 config.plugins.spellcheck.dictionary_file = USERDIR .. "/words"
+config.plugins.language_c = false
+config.plugins.language_cpp = false
+config.plugins.language_css = false
+config.plugins.language_html = false
+config.plugins.language_js = false
+config.plugins.language_python = false
+config.plugins.language_xml = false
 config.plugins.linewrapping = { 
   enable_by_default = true, 
   mode = "word", 
@@ -32,6 +39,7 @@ function DocView:draw_line_gutter(line, x, y, width)
 end
 function DocView:get_gutter_width() return math.max(self.size.x - document_width, 0) / 2 end
 config.plugins.tag_highlight = false
+config.transitions = false
 
 keymap.add {
   ["ctrl+h"] = "core:open-log",

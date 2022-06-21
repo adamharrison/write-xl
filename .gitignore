@@ -1,3 +1,5 @@
 user/ws
 user/session.lua
 user/error.txt
+*.so
+*.a

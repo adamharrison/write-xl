@@ -1,15 +1,23 @@
 -- mod-version:3 --lite-xl 2.1
+-- Plugin designed to make it easy to edit single files, push them, and load them from multiple machines.
+-- Designed as part of the write-xl project.
 
 local core = require "core"
 local keymap = require "core.keymap"
 local command = require "core.command"
 local common = require "core.common"
+local config = require "core.config"
 local git = require "plugins.gitsave.native"
+local DocView = require "core.docview"
 
 config.plugins.gitsave = common.merge({
   repository_root = system.absolute_path("."),
-  -- if true, checks to see if the primary project is a git repo, and if so, perform a fetch.
-  auto_open_and_pull = true,
+  remote_branch_name = "master",
+  local_branch_name = "master",
+  -- should be set in your project config, if you want to init correctly. if already set in .git, it'll use that.
+  remote_url = nil,
+  -- if true, checks on startup to see if the primary project is a git repo, and if so, perform a fetch and merge.
+  auto_pull = true,
   -- the username to authenticate with
   username = nil,
   -- the password to authenticate with
@@ -17,8 +25,7 @@ config.plugins.gitsave = common.merge({
   -- the email to use on commits
   email = nil,
   -- the name to use on commits
-  name = nil,
-  
+  name = nil  
 }, config.plugins.gitsave)
 
 local git = require "plugins.gitsave.native"
@@ -28,24 +35,36 @@ end
 local repo = nil
 
 local function fetch_and_merge(repo)
-  local remote = repo:remote("origin")
+  local remote = repo:remote("origin", config.plugins.gitsave.remote_url)
   remote:fetch(function()
-    local merged = repo:merge("refs/remotes/origin/master")
-    if merged and type(merged) == "string" then
-      repo:reset(merged, "hard")
-    else if merged then
-      local commit_id = repo:commit("Merged remote.")
-      repo:reset(commit_id, "hard")
+    core.log("Successfully fetched git remote origin.")
+    if not repo:branch(config.plugins.gitsave.local_branch_name, "refs/remotes/origin/" .. config.plugins.gitsave.remote_branch_name) then
+      local merged = repo:merge("refs/remotes/origin/" .. config.plugins.gitsave.remote_branch_name)
+      if merged and type(merged) == "string" then
+        core.log("Performed fast-forward to " .. merged .. ".")
+        repo:reset(merged, "hard")
+      elseif merged then
+        local commit_id = repo:commit("Merged remote.")
+        repo:reset(commit_id, "hard")
+        core.log("Performed merge, committed, and reset to " .. commit_id .. ".")
+      else
+        core.log("No merge required, up-to-date.")
+      end
+    else
+      core.log("Set HEAD to origin HEAD.")
+      repo:reset("HEAD", "hard")
     end
   end)
 end
 
-if config.plugins.gitsave.auto_open_and_pull and system.get_file_info(".git") then
+if system.get_file_info(".git") then
   repo = load_repo()
-  fetch_and_merge(repo)
+  if config.plugins.gitsave.auto_pull then
+    fetch_and_merge(repo)
+  end
 end
 
-command.add(DocView, {
+command.add(nil, {
   ["gitsave:init"] = function()
     repo = load_repo()
   end,
@@ -54,30 +73,30 @@ command.add(DocView, {
   end,
   ["gitsave:push"] = function() 
     local doc = core.active_view and core.active_view.doc
-    if repo:add(doc.abs_filename) then
+    if repo:add(doc.filename) then
       core.command_view:enter("Commit message? (blank is OK)", function(text)
         local remote = repo:remote("origin")
         repo:commit(text or ("Automatic GitSave Commit " + os.date("%Y-%m-%dT%H:%M:%S")))
-        remote:push("refs/heads/master", function ()
+        core.log("Pushing to remote for %s.", doc.filename .. "...")
+        remote:push("refs/heads/" .. config.plugins.gitsave.local_branch_name, function ()
           core.log("Pushed changes to remote for %s.", doc.filename)
         end)
       end)
     else
       core.log("No changes detected on %s.", doc.filename)
     end
-  end,
-  ["gitsave:check-push-to-git"] = function() 
+  end
+})
+
+command.add(DocView, {
+  ["gitsave:save"] = function() 
     local doc = core.active_view and core.active_view.doc
     if doc then
-      if (not doc.filename or doc:is_dirty()) then
-        command.perform("doc:save")
-      else
-        command.perform("gitsave:push")
-      end
+      command.perform((not doc.filename or doc:is_dirty()) and "doc:save" or "gitsave:push")
     end
   end
 })
 
 keymap.add_direct {
-  ["ctrl+s"] = "gitsave:save-to-git"
+  ["ctrl+s"] = { "gitsave:save", "doc:save" }
 }

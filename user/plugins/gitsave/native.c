@@ -1,7 +1,9 @@
+// gcc -I ~/write-xl/android/lite-xl-simplified/resources -DLITE_XL_PLUGIN native.c -fPIC -l:libgit2.a -lz -lssl -lpcre  -shared -o native.so
+// gcc native.c -fPIC -l:libgit2.a -lz -lssl -lpcre  -shared -o native.so
 #include <git2.h>
 #include <string.h>
 #if LITE_XL_PLUGIN
-  #include "lite_xl_plugin_api.h"
+  #include <lite_xl_plugin_api.h>
 #else
   #include <lua.h>
   #include <lauxlib.h>
@@ -53,7 +55,6 @@ static git_commit* git_retrieve_commit(lua_State* L, git_repository* repository,
 
 static void* luaL_checkinternal(lua_State *L, int idx, const char* type) {
   luaL_checktype(L, idx, LUA_TTABLE);
-  luaL_checktype(L, idx, LUA_TTABLE);
   lua_getfield(L, idx, "internal");
   void* internal = lua_touserdata(L, -1);
   if (!internal) {
@@ -100,12 +101,12 @@ static int f_git_open(lua_State* L) {
 static int f_git_repo_create_load_remote(lua_State* L) {
   git_repository* repository = luaL_checkinternal(L, 1, API_GIT_REPO);
   const char* name = luaL_checkstring(L, 2);
-  const char* url = luaL_checkstring(L, 3);
+  const char* url = luaL_optstring(L, 3, NULL);
+  git_remote* remote;
+  if (git_remote_lookup(&remote, repository, name) && url && git_remote_create(&remote, repository, name, url))
+    return luaL_error(L, "git remote add error: %s", url ? git_error_last_string() : "no url");
   lua_newtable(L);
   luaL_setmetatable(L, API_GIT_REMOTE);
-  git_remote* remote;
-  if (git_remote_lookup(&remote, repository, name) && git_remote_create(&remote, repository, name, url))
-    return luaL_error(L, "git remote add error: %s", git_error_last_string());
   lua_pushlightuserdata(L, remote);
   lua_setfield(L, -2, "internal");
   lua_pushvalue(L, 1);
@@ -181,7 +182,7 @@ static int f_git_remote_push(lua_State* L) {
   push_opts.callbacks.credentials = credential_callback;
   push_opts.callbacks.payload = &credentials;
   git_strarray array;
-  array.strings = &branch;
+  array.strings = (char**)&branch;
   array.count = 1;
   if (git_remote_push(remote, &array, &push_opts))
     return luaL_error(L, "git remote push error: %s", git_error_last_string());
@@ -315,7 +316,7 @@ static int f_git_repo_add(lua_State* L) {
   
   unsigned int flags = 0;
   if (git_status_file(&flags, repository, path))
-    return luaL_error("git status error: %s", git_error_last_string());
+    return luaL_error(L, "git status error: %s", git_error_last_string());
   if (!(flags & (GIT_STATUS_WT_MODIFIED | GIT_STATUS_WT_DELETED | GIT_STATUS_WT_NEW)))
     return 0;
     
