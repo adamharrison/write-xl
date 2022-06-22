@@ -29,6 +29,7 @@ rm -rf $DESTINATION
 mkdir -p $DESTINATION
 
 export PATH=$TOOLCHAIN/bin:$ANDROID_NDK_ROOT/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:$PATH
-cd $OPENSSL && ./Configure $OPENSSL_TARGET --prefix=$CWD/builds/$API/$TARGET && make clean && make -j 12 && make install
+cd $OPENSSL && CFLAGS="-fPIC" ./Configure $OPENSSL_TARGET  threads no-engine no-tests no-shared --prefix=$CWD/builds/$API/$TARGET -fPIC && make clean && make distclean
+cd $OPENSSL && CFLAGS="-fPIC" ./Configure $OPENSSL_TARGET  threads no-engine no-tests no-shared --prefix=$CWD/builds/$API/$TARGET -fPIC && make -j 12 && make install_sw install_ssldirs
 
 done
