@@ -23,7 +23,7 @@ Things I had to do to get this godawful monstrosity working:
 
 1. Not much for base lite.
 2. For libgit2, I had to:
-  * Patch in getloadavg into the build; specifically into src/rand.c.
+  * Patch in getloadavg into the build; specifically into the bottom of src/rand.c.
   
   ```c
     #include <sys/sysinfo.h>
@@ -39,10 +39,10 @@ Things I had to do to get this godawful monstrosity working:
       return n;
     }
   ```
+3. Ensure that openssl is clean each time, and that it's on 1.1.1 stable; master has relocation errors in ARM64.
 
 ## TODO
 
-* Git Integration
 	Specifically, I want to have git as an executable the APK can access, and use. This would allow basic pushing/pulling/cloning through a github repo to save files.
 	It looks like it's gonna be complex to support `ssh` authentication. So unless you have `ssh` installed on your phone, we're going to only support https.
 * Chapter Navigation
