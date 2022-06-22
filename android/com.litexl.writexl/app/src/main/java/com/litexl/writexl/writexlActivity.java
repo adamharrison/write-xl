@@ -14,6 +14,7 @@ import android.app.ActionBar;
 import android.view.WindowManager;
 import android.view.WindowInsetsController;
 import android.view.WindowInsets;
+import android.os.Build;
 import java.io.File;
 
 public class writexlActivity extends SDLActivity {
@@ -27,6 +28,7 @@ public class writexlActivity extends SDLActivity {
                 throw new IOException("Can't make directory " + file.getPath());
             copyDirectoryOrFile(getAssets(), "data", getExternalFilesDir("share") + "/lite-xl");
             copyDirectoryOrFile(getAssets(), "user", userdir + "/lite-xl");
+            copyDirectoryOrFile(getAssets(), "user", userdir + "/lite-xl");
         } catch (IOException e) {
             Log.e("assetManager", "Failed to copy assets: " + e.getMessage());
         }
@@ -39,6 +41,11 @@ public class writexlActivity extends SDLActivity {
         nativeSetenv("LITE_SCALE", "2.0");
         Log.i("litexl", "Setting XDG_CONFIG_HOME to " + userdir);
         nativeSetenv("XDG_CONFIG_HOME", userdir);
+        
+        for (String abi : Build.SUPPORTED_ABIS) {
+            Log.i("litexl", "Device Architecture is "+ abi);
+        }
+        
         
         getWindow().setDecorFitsSystemWindows(false);
         WindowInsetsController controller = getWindow().getInsetsController();
