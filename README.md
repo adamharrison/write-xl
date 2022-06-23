@@ -39,6 +39,7 @@ Things I had to do to get this godawful monstrosity working:
       return n;
     }
   ```
+  * update the compiler standard to C99 in libgit2 (`C_STANDARD`).
 3. Ensure that openssl is clean each time, and that it's on 1.1.1 stable; master has relocation errors in ARM64.
 
 ## TODO

@@ -4,6 +4,7 @@
 [submodule "lite-xl-plugins"]
 	path = lite-xl-plugins
 	url = git@github.com:lite-xl/lite-xl-plugins.git
+	branch = 2.1
 [submodule "android/openssl"]
 	path = android/openssl
 	url = git@github.com:openssl/openssl.git
