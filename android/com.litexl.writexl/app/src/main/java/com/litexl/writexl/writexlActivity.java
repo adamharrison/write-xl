@@ -18,6 +18,18 @@ import android.os.Build;
 import java.io.File;
 
 public class writexlActivity extends SDLActivity {
+    static String getArchitecturePrefix(String abi) {
+        if (abi.indexOf("arm64-v8a") != -1)
+            return "aarch64-linux-android";
+        if (abi.indexOf("armeabi-") != -1)
+            return "armv7a-linux-androideabi";
+        if (abi.indexOf("x86_64") != -1)
+            return "x86_64-linux-android";
+        if (abi.indexOf("x86") !=- 1)
+            return "i686-linux-android";
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String prefix = getExternalFilesDir(null) + "";
@@ -28,7 +40,7 @@ public class writexlActivity extends SDLActivity {
                 throw new IOException("Can't make directory " + file.getPath());
             copyDirectoryOrFile(getAssets(), "data", getExternalFilesDir("share") + "/lite-xl");
             copyDirectoryOrFile(getAssets(), "user", userdir + "/lite-xl");
-            copyDirectoryOrFile(getAssets(), "user", userdir + "/lite-xl");
+            copyFile(getAssets(), "gitsave/" + writexlActivity.getArchitecturePrefix(Build.SUPPORTED_ABIS[0]) + "/native.so" , userdir + "/lite-xl/user/plugins/gitsave/native.so");
         } catch (IOException e) {
             Log.e("assetManager", "Failed to copy assets: " + e.getMessage());
         }
@@ -42,9 +54,6 @@ public class writexlActivity extends SDLActivity {
         Log.i("litexl", "Setting XDG_CONFIG_HOME to " + userdir);
         nativeSetenv("XDG_CONFIG_HOME", userdir);
         
-        for (String abi : Build.SUPPORTED_ABIS) {
-            Log.i("litexl", "Device Architecture is "+ abi);
-        }
         
         
         getWindow().setDecorFitsSystemWindows(false);
@@ -61,22 +70,26 @@ public class writexlActivity extends SDLActivity {
         return args;
     }
     
+    private void copyFile(AssetManager assetManager, String source, String target) throws IOException  {
+        Log.i("assetManager", "Copying file " + source + " to " + target);
+        InputStream in = assetManager.open(source);
+        FileOutputStream out = new FileOutputStream(target);
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+            out.write(buffer, 0, read);
+        }
+        in.close();
+        out.flush();
+        out.close();
+    }    
+    
     private void copyDirectoryOrFile(AssetManager assetManager, String source, String target) throws IOException {
         Log.i("assetManager", "Copying assets from " + source);
         String[] files = assetManager.list(source);
         String transformedTarget = target + "/" + source.substring(source.indexOf("/") + 1);
         if (files.length == 0) {
-            Log.i("assetManager", "Copying file " + source + " to " + transformedTarget);
-            InputStream in = assetManager.open(source);
-            FileOutputStream out = new FileOutputStream(transformedTarget);
-            byte[] buffer = new byte[1024];
-            int read;
-            while((read = in.read(buffer)) != -1){
-                out.write(buffer, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
+           copyFile(assetManager, source, transformedTarget);
         } else {
             Log.i("assetManager", "Copying directory " + source + " to " + transformedTarget);
             File directory = new File(transformedTarget);
