@@ -40,7 +40,7 @@ public class writexlActivity extends SDLActivity {
                 throw new IOException("Can't make directory " + file.getPath());
             copyDirectoryOrFile(getAssets(), "data", getExternalFilesDir("share") + "/lite-xl");
             copyDirectoryOrFile(getAssets(), "user", userdir + "/lite-xl");
-            copyFile(getAssets(), "gitsave/" + writexlActivity.getArchitecturePrefix(Build.SUPPORTED_ABIS[0]) + "/native.so" , userdir + "/lite-xl/user/plugins/gitsave/native.so");
+            copyFile(getAssets(), "gitsave/" + writexlActivity.getArchitecturePrefix(Build.SUPPORTED_ABIS[0]) + "/native.so", userdir + "/lite-xl/plugins/gitsave/native.so");
         } catch (IOException e) {
             Log.e("assetManager", "Failed to copy assets: " + e.getMessage());
         }

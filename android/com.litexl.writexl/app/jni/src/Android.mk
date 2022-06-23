@@ -6,7 +6,7 @@ LOCAL_MODULE := main
 
 SDL_PATH := ../SDL
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include /home/adam/write-xl/android/lite-xl-simplified/lib/freetype/include /home/adam/write-xl/android/lite-xl-simplified/lib/lua /home/adam/write-xl/android/lite-xl-simplified/lib/pcre2/src
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/$(SDL_PATH)/include $(LOCAL_PATH)/lite-xl-simplified/lib/freetype/include $(LOCAL_PATH)/lite-xl-simplified/lib/lua $(LOCAL_PATH)/lite-xl-simplified/lib/pcre2/src
 LOCAL_CFLAGS := -DPCRE2_STATIC  -DHAVE_CONFIG_H -DPCRE2_CODE_UNIT_WIDTH=8  -DFT2_BUILD_LIBRARY -DANDROID_TOOLCHAIN=clang -g
 LOCAL_LDFLAGS := -lm
 # Add your application source files here...

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 export TOOLCHAIN=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64
 
