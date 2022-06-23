@@ -7,6 +7,8 @@
 [submodule "android/openssl"]
 	path = android/openssl
 	url = git@github.com:openssl/openssl.git
+	branch = OpenSSL_1_1_1-stable
 [submodule "android/libgit2"]
 	path = android/libgit2
+	branch = main
 	url = git@github.com:libgit2/libgit2.git
