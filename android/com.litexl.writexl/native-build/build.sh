@@ -31,7 +31,7 @@ mkdir -p $DESTINATION
 
 echo $CFLAGS
 
-$CC ../../../user/plugins/gitsave/native.c -Bshared $CFLAGS $LDFLAGS -fPIC -shared -o $DESTINATION/native.so
+$CC ../../../user/plugins/gitsave/native.c -Bshared $CFLAGS $LDFLAGS -fPIC -shared -o $DESTINATION/libgitsave_native.so
 
 done
 
