@@ -32,7 +32,7 @@ lite-xl-simplified/lib/freetype/src/pfr/pfr.c lite-xl-simplified/lib/freetype/sr
 lite-xl-simplified/lib/freetype/src/bdf/bdf.c lite-xl-simplified/lib/freetype/src/raster/raster.c lite-xl-simplified/lib/freetype/src/sdf/sdf.c lite-xl-simplified/lib/freetype/src/gzip/ftgzip.c lite-xl-simplified/lib/freetype/src/lzw/ftlzw.c \
 lite-xl-simplified/lib/freetype/src/svg/ftsvg.c
 
-LOCAL_SHARED_LIBRARIES := SDL2
+LOCAL_SHARED_LIBRARIES := SDL2 
 LOCAL_LDLIBS := -lOpenSLES -llog -landroid
 
 include $(BUILD_SHARED_LIBRARY)

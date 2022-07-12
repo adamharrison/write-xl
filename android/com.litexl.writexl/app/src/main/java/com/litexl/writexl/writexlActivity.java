@@ -18,29 +18,19 @@ import android.os.Build;
 import java.io.File;
 
 public class writexlActivity extends SDLActivity {
-    static String getArchitecturePrefix(String abi) {
-        if (abi.indexOf("arm64-v8a") != -1)
-            return "aarch64-linux-android";
-        if (abi.indexOf("armeabi-") != -1)
-            return "armv7a-linux-androideabi";
-        if (abi.indexOf("x86_64") != -1)
-            return "x86_64-linux-android";
-        if (abi.indexOf("x86") !=- 1)
-            return "i686-linux-android";
-        return null;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String prefix = getExternalFilesDir(null) + "";
         String userdir = getExternalFilesDir("user") + "";
         File file = new File(getExternalFilesDir("files") + "");
+        String sslCertFile = getExternalFilesDir("share") + "/lite-xl/cacert.pem";
         try {
             if (!file.exists() && !file.mkdirs())
                 throw new IOException("Can't make directory " + file.getPath());
             copyDirectoryOrFile(getAssets(), "data", getExternalFilesDir("share") + "/lite-xl");
             copyDirectoryOrFile(getAssets(), "user", userdir + "/lite-xl");
-            copyFile(getAssets(), "gitsave/" + writexlActivity.getArchitecturePrefix(Build.SUPPORTED_ABIS[0]) + "/native.so", userdir + "/lite-xl/plugins/gitsave/native.so");
+            copyFile(getAssets(), "cacert.pem", sslCertFile);
         } catch (IOException e) {
             Log.e("assetManager", "Failed to copy assets: " + e.getMessage());
         }
@@ -53,6 +43,8 @@ public class writexlActivity extends SDLActivity {
         nativeSetenv("LITE_SCALE", "2.0");
         Log.i("litexl", "Setting XDG_CONFIG_HOME to " + userdir);
         nativeSetenv("XDG_CONFIG_HOME", userdir);
+        Log.i("litexl", "Setting SSL_CERT_FILE to " + sslCertFile);
+        nativeSetenv("SSL_CERT_FILE", sslCertFile);
         
         
         
