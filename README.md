@@ -21,7 +21,8 @@ Write-XL is a set of plugins that operates overtop of lite-xl. It's designed to 
 
 Things I had to do to get this godawful monstrosity working:
 
-1. Not much for base lite.
+1. Not much for base lite. Had to patch in LITE_PREFIX into start code, and to start.lua. Had to patch in `SDL_EventState(SDL_, SDL_ENABLED);` and a small bit into 
+	 core.set_active_view: `if view:is(DocView) then system.start_editing() else system.end_editing() end`, and those two system functions.
 2. For libgit2, I had to:
   * Patch in getloadavg into the build; specifically into the bottom of src/rand.c.
   
@@ -58,3 +59,7 @@ Things I had to do to get this godawful monstrosity working:
 ## Install
  
 To install, simply drop the `user` folder next to your `lite-xl` executable, or, set your `XDG_CONFIG_HOME` environment variable to this repository's directory.
+
+## Useful Commands
+
+* `adb shell runas com.litexl.writexl sh`

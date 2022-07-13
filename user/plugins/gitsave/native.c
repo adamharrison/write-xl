@@ -2,6 +2,7 @@
 // gcc native.c -fPIC -l:libgit2.a -lz -lssl -lpcre  -shared -o native.so
 #include <git2.h>
 #include <string.h>
+#include <ctype.h>
 #if LITE_XL_PLUGIN
   #include <lite_xl_plugin_api.h>
 #else
@@ -39,10 +40,32 @@ static const char* git_error_last_string() {
   return last_error->message;
 }
 
+
+static void lua_pushhex(lua_State* L, const char* hex, int length) {
+  static const char* hexDigits = "0123456789abcdef";
+  char buffer[1024];
+  int i;
+  for (i = 0; i < length && i < sizeof(buffer)/2; ++i) {
+    buffer[i*2] = hexDigits[hex[i] >> 4];
+    buffer[i*2+1] = hexDigits[hex[i] & 0xF];
+  }
+  lua_pushlstring(L, buffer, length*2);
+}
+
+static int git_get_id(git_oid* commit_id, git_repository* repository, const char* name) {
+  int length = strlen(name);
+  int is_hex = length == 40;
+  for (int i = 0; is_hex && i < length; ++i)
+    is_hex = isxdigit(name[i]);
+  if (!is_hex)
+    return git_reference_name_to_id(commit_id, repository, name);
+  return git_oid_fromstr(commit_id, name);
+}
+
 static git_commit* git_retrieve_commit(lua_State* L, git_repository* repository, const char* commit_name) {
   git_oid commit_id;
   git_commit* commit;
-  if (git_reference_name_to_id(&commit_id, repository, commit_name)) {
+  if (git_get_id(&commit_id, repository, commit_name)) {
     luaL_error(L, "git reference lookup error: %s", git_error_last_string());
     return NULL;
   }
@@ -103,7 +126,7 @@ static int f_git_repo_create_load_remote(lua_State* L) {
   const char* name = luaL_checkstring(L, 2);
   const char* url = luaL_optstring(L, 3, NULL);
   git_remote* remote;
-  if (git_remote_lookup(&remote, repository, name) && url && git_remote_create(&remote, repository, name, url))
+  if (git_remote_lookup(&remote, repository, name) && (!url || git_remote_create(&remote, repository, name, url)))
     return luaL_error(L, "git remote add error: %s", url ? git_error_last_string() : "no url");
   lua_newtable(L);
   luaL_setmetatable(L, API_GIT_REMOTE);
@@ -211,6 +234,7 @@ static int f_git_repo_reset(lua_State* L) {
 }
 
 
+
 // returns a string if a fast-forward (the commit to use), true if a merge is required, false if no merge required.
 static int f_git_repo_merge(lua_State* L) {
   git_repository* repository = luaL_checkinternal(L, 1, API_GIT_REPO);
@@ -221,21 +245,21 @@ static int f_git_repo_merge(lua_State* L) {
   git_merge_options_init(&merge_options, GIT_MERGE_OPTIONS_VERSION);
   git_checkout_options checkout_options;
   git_checkout_options_init(&checkout_options, GIT_CHECKOUT_OPTIONS_VERSION);
-  if (git_reference_name_to_id(&commit_id, repository, commit_name))
+  if (git_get_id(&commit_id, repository, commit_name))
     return luaL_error(L, "git reference lookup error: %s", git_error_last_string());
   // Determine if a fast-forward. If it is, report 0. If we need to actually merge, 
   git_oid merge_base, master_id;
-  if (git_reference_name_to_id(&master_id, repository, "refs/heads/master"))
+  if (git_get_id(&master_id, repository, "refs/heads/master"))
     return luaL_error(L, "git reference lookup error: %s", git_error_last_string());
   if (git_merge_base(&merge_base, repository, &master_id, &commit_id))
     return luaL_error(L, "git merge base error: %s", git_error_last_string());
-  // If merge base is the same as master, this is a fast forward, and we should return the commit id of the merging in branch.
+  // If merge base is the merging in commit, we've already merged it.
   if (memcmp(merge_base.id, commit_id.id, sizeof(merge_base.id)) == 0) {
     lua_pushboolean(L, 0);
     return 1;  
-  // If merge base is the merging in commit, we've already merged it.
+  // If merge base is the same as master, this is a fast forward, and we should return the commit id of the merging in branch.
   } else if (memcmp(merge_base.id, master_id.id, sizeof(merge_base.id)) == 0) {
-    lua_pushlstring(L, commit_id.id, sizeof(commit_id.id));
+    lua_pushhex(L, (char*)commit_id.id, sizeof(commit_id.id));
     return 1;
   }
   if (git_annotated_commit_lookup(&commit, repository, &commit_id))
@@ -291,7 +315,7 @@ static int f_git_repo_commit(lua_State* L) {
     (const git_commit**)&commit);                    /* parents */
   if (error)
     return luaL_error(L, "git commit error: %s", git_error_last_string());
-  lua_pushlstring(L, new_commit_id.id, sizeof(new_commit_id.id));
+  lua_pushhex(L, (char*)new_commit_id.id, sizeof(new_commit_id.id));
   return 1;
 }
 
@@ -299,9 +323,9 @@ static int f_git_repo_lookup(lua_State* L) {
   git_repository* repository = luaL_checkinternal(L, 1, API_GIT_REPO);
   const char* commit_name = luaL_checkstring(L, 2);
   git_oid commit_id;
-  if (git_reference_name_to_id(&commit_id, repository, commit_name))
+  if (git_get_id(&commit_id, repository, commit_name))
     return luaL_error(L, "git reference lookup error: %s", git_error_last_string());
-  lua_pushlstring(L, commit_id.id, sizeof(commit_id.id));
+  lua_pushhex(L, (char*)commit_id.id, sizeof(commit_id.id));
   return 1;
 }
 
@@ -384,12 +408,14 @@ static luaL_Reg plugin_api[] = {
 
 
 #if LITE_XL_PLUGIN
-int luaopen_lite_xl_native(lua_State* L, void* XL) {
+int luaopen_lite_xl_gitsave(lua_State* L, void* XL) {
   lite_xl_plugin_init(XL);
 #else 
-int luaopen_native(lua_State* L) {
+int luaopen_gitsave(lua_State* L) {
 #endif
   git_libgit2_init();
+  if (getenv("SSL_CERT_FILE"))
+    git_libgit2_opts(GIT_OPT_SET_SSL_CERT_LOCATIONS, getenv("SSL_CERT_FILE"), NULL);
   luaL_newmetatable(L, API_GIT_REPO);
   lua_pushvalue(L, -1);
   lua_setfield(L, -2, "__index");

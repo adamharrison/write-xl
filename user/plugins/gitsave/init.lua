@@ -7,7 +7,6 @@ local keymap = require "core.keymap"
 local command = require "core.command"
 local common = require "core.common"
 local config = require "core.config"
-local git = require "plugins.gitsave.native"
 local DocView = require "core.docview"
 
 config.plugins.gitsave = common.merge({
@@ -17,7 +16,7 @@ config.plugins.gitsave = common.merge({
   -- should be set in your project config, if you want to init correctly. if already set in .git, it'll use that.
   remote_url = nil,
   -- if true, checks on startup to see if the primary project is a git repo, and if so, perform a fetch and merge.
-  auto_pull = true,
+  auto_pull = false,
   -- the username to authenticate with
   username = nil,
   -- the password to authenticate with
@@ -28,7 +27,7 @@ config.plugins.gitsave = common.merge({
   name = nil  
 }, config.plugins.gitsave)
 
-local git = require "plugins.gitsave.native"
+local git = PLATFORM == "Android" and system.load_native_plugin("gitsave", "libgitsave_native.so") or require "plugins.gitsave.libgitsave_native"
 local function load_repo()
   return git.open(config.plugins.gitsave.repository_root, config.plugins.gitsave)
 end
@@ -69,6 +68,7 @@ command.add(nil, {
     repo = load_repo()
   end,
   ["gitsave:fetch"] = function() 
+    -- Determine if we actually have the username/password and remote_url configured. If not, then prompt for them.
     fetch_and_merge(repo)
   end,
   ["gitsave:push"] = function() 

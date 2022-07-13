@@ -7,13 +7,15 @@ local config = require "core.config"
 local style = require "core.style"
 local common = require "core.common"
 local DocView = require "core.docview"
+local command = require "core.command"
+local TreeView = require "plugins.treeview"
 
 local document_width = 900 * SCALE
 
 core.reload_module('colors.document')
 
 config.plugins.autocomplete = false
-config.plugins.treeview = false
+TreeView.visible = false
 config.highlight_current_line = false
 config.plugins.spellcheck.dictionary_file = USERDIR .. "/words"
 config.plugins.language_c = false
@@ -41,8 +43,20 @@ function DocView:get_gutter_width() return math.max(self.size.x - document_width
 config.plugins.tag_highlight = false
 config.transitions = false
 
+command.add(nil, {
+  ["files:delete"] = function() 
+    core.command_view:enter("Delete file path", function(text)
+      local success, err, path = common.rm(text)
+      if not success then
+        core.error("cannot delete file %q: %s", path, err)
+      end
+    end)
+  end
+})
+
 keymap.add {
   ["ctrl+h"] = "core:open-log",
   ["ctrl+shift+y"] = "synonyms:replace",
-  ["ctrl+shift+t"] = "spell-check:replace"
+  ["ctrl+shift+t"] = "spell-check:replace",
+  ["ctrl+q"] = { "command:escape", "doc:select-none", "dialog:select-no" }
 }
