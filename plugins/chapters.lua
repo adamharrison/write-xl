@@ -95,17 +95,17 @@ local function predicate_docview()
     and not core.active_view:is(CommandView)
 end
 
-core.status_view:add_item(
-  predicate_docview,
-  "chapters:display",
-  StatusView.Item.RIGHT,
-  function()
+core.status_view:add_item({
+  predicate = predicate_docview,
+  name = "chapters:display",
+  alignment = StatusView.Item.RIGHT,
+  get_item = function()
     local dv = core.active_view
     local chapter = get_chapter(core.active_view.doc)
     if not chapter then return {} end
     return { "Chapter " .. chapter }
   end
-)
+})
 
 
 command.add("core.docview", {
