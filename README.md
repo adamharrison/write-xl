@@ -21,14 +21,14 @@ Write-XL is a set of plugins that operates overtop of lite-xl. It's designed to 
 
 Things I had to do to get this godawful monstrosity working:
 
-1. Not much for base lite. Had to patch in LITE_PREFIX into start code, and to start.lua. Had to patch in `SDL_EventState(SDL_, SDL_ENABLED);` and a small bit into 
+1. Not much for base lite. Had to patch in LITE_PREFIX into start code, and to start.lua. Had to patch in `SDL_EventState(SDL_, SDL_ENABLED);` and a small bit into
 	 core.set_active_view: `if view:is(DocView) then system.start_editing() else system.end_editing() end`, and those two system functions.
 2. For libgit2, I had to:
   * Patch in getloadavg into the build; specifically into the bottom of src/rand.c.
-  
+
   ```c
     #include <sys/sysinfo.h>
-    
+
     int getloadavg(double averages[], int n) {
       if (n < 0) return -1;
       if (n > 3) n = 3;
@@ -45,7 +45,7 @@ Things I had to do to get this godawful monstrosity working:
 
 ## TODO
 
-	Specifically, I want to have git as an executable the APK can access, and use. This would allow basic pushing/pulling/cloning through a github repo to save files.
+* Specifically, I want to have git as an executable the APK can access, and use. This would allow basic pushing/pulling/cloning through a github repo to save files.
 	It looks like it's gonna be complex to support `ssh` authentication. So unless you have `ssh` installed on your phone, we're going to only support https.
 * Chapter Navigation
 * Automatic Chapter Summaries
@@ -57,8 +57,14 @@ Things I had to do to get this godawful monstrosity working:
 * Other Document Metrics
 
 ## Install
- 
-To install, simply drop the `user` folder next to your `lite-xl` executable, or, set your `XDG_CONFIG_HOME` environment variable to this repository's directory.
+
+To install, simply use [`lpm`](https://github.com/lite-xl/lite-xl-plugin-manager):
+
+```
+lpm install write-xl
+```
+
+As an alternative, set this directory as your `LITE_USERDIR` environment variable.
 
 ## Useful Commands
 

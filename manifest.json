@@ -1,0 +1,46 @@
+{
+	"addons": [
+		{
+			"id": "write-xl",
+			"tags": ["total conversion"],
+			"path": "plugins/write-xl.lua",
+			"description": "A total conversion for lite-xl that transforms lite-xl into a word-processor like text-editor for creative writing.",
+			"dependencies": [
+				"gitsave",
+				"smallclock",
+				"spellcheck",
+				"synonyms",
+				"chapters",
+				"wordcount",
+				"formatting",
+				"word"
+			]
+		},
+		{
+			"id": "word",
+			"type": "color",
+			"description": "A word-like color scheme, designed to be used for creative-writing of markdown files. Part of the write-xl project."
+		},
+		{
+			"id": "chapters",
+			"description": "A plugin used to navigate through, and parse chapter information in creative writing markdown files. Part of the write-xl project.",
+		},
+		{
+			"id": "gitsave",
+			"description": "A simple git plugin that allows for easy fetch/save of repos anchored at the project root. Part of the write-xl project.",
+			"dependencies": ["libgit2"]
+		},
+		{
+			"id": "synonyms",
+			"description": "A plugin similar to spellcheck which uses a thesaurus to provide alternate words. Part of the write-xl project.",
+		},
+		{
+			"id": "wordcount",
+			"description": "Provides information about the word count of docview in the bottom right corner of the screen. Part of the write-xl project.",
+		},
+		{
+			"id": "formatting",
+			"description": "Provides automatic shortcuts, and a toolbar to manage the formatting of a markdown docview. Part of the write-xl project.",
+		}
+	]
+}
