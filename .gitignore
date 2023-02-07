@@ -1,5 +1,3 @@
-user/ws
-user/session.lua
-user/error.txt
+user
 *.so
 *.a
