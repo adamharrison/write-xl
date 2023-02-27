@@ -1,6 +1,6 @@
-# WRITE-XL
+# write-xl
 
-Write-XL is a set of plugins that operates overtop of lite-xl. It's designed to make the text editor more appealing to use for writing and reading fiction, in markdown.
+write-xl is a set of plugins that operates overtop of lite-xl. It's designed to make the text editor more appealing to use for writing and reading fiction, in markdown.
 
 ## Features
 
@@ -10,6 +10,9 @@ Write-XL is a set of plugins that operates overtop of lite-xl. It's designed to 
 * Spellchecker
 * Synonyms
 * Jump to Chapter
+* Ability use git quicly and easily to track changes, and to provide a method of remote synchroniation.
+* Word Counter
+* Small clock in the bottom right corner.
 
 ## Building
 
@@ -42,26 +45,28 @@ Things I had to do to get this godawful monstrosity working:
   ```
   * update the compiler standard to C99 in libgit2 (`C_STANDARD`).
 3. Ensure that openssl is clean each time, and that it's on 1.1.1 stable; master has relocation errors in ARM64.
+4. When we throw in dynamic plugins into android, they need to be linked and packed in a particular way. You can't just dlopen something anymore;
+   It has to be done through a particular packing method.
 
 ## TODO
 
-* Specifically, I want to have git as an executable the APK can access, and use. This would allow basic pushing/pulling/cloning through a github repo to save files.
-	It looks like it's gonna be complex to support `ssh` authentication. So unless you have `ssh` installed on your phone, we're going to only support https.
-* Chapter Navigation
-* Automatic Chapter Summaries
+* Chapter Navigation, via sicebar.
+* Chapter wordcount in parentheses on sidebar.
+* Automatic Chapter Summaries as a view, by running chapter through an automatic summarizer library.
 * Side-by-Side Outline Reading
-* Using `git` as a track changes method (because, let's be real, track changes is shit, normally; and `git` is one of the most used softwares on the planet).
 * A plugin to detect whether you're overusing a particular phrase.
 * Character Registry, with Minimap
-* Word Count
-* Other Document Metrics
+* Small clock that tracks current session time.
+* Small clcok that tracks actual writing time.
+* Ability to have a view of a chapter as an individual document (`ChapterView`, inherited from DocView).
+*
 
 ## Install
 
 To install, simply use [`lpm`](https://github.com/lite-xl/lite-xl-plugin-manager):
 
 ```
-lpm install write-xl
+lpm run write-xl
 ```
 
 As an alternative, set this directory as your `LITE_USERDIR` environment variable.

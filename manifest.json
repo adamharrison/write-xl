@@ -23,7 +23,7 @@
 		},
 		{
 			"id": "chapters",
-			"description": "A plugin used to navigate through, and parse chapter information in creative writing markdown files. Part of the write-xl project.",
+			"description": "A plugin used to navigate through, and parse chapter information in creative writing markdown files. Part of the write-xl project."
 		},
 		{
 			"id": "gitsave",
@@ -32,15 +32,11 @@
 		},
 		{
 			"id": "synonyms",
-			"description": "A plugin similar to spellcheck which uses a thesaurus to provide alternate words. Part of the write-xl project.",
-		},
-		{
-			"id": "wordcount",
-			"description": "Provides information about the word count of docview in the bottom right corner of the screen. Part of the write-xl project.",
+			"description": "A plugin similar to spellcheck which uses a thesaurus to provide alternate words. Part of the write-xl project."
 		},
 		{
 			"id": "formatting",
-			"description": "Provides automatic shortcuts, and a toolbar to manage the formatting of a markdown docview. Part of the write-xl project.",
+			"description": "Provides automatic shortcuts, and a toolbar to manage the formatting of a markdown docview. Part of the write-xl project."
 		}
 	]
 }
