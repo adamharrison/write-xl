@@ -1,6 +1,6 @@
 package com.litexl.writexl;
 
-import com.litexl.litexl;
+import com.litexl.litexl.litexlActivity;
 
 public class writexlActivity extends litexlActivity {
 
