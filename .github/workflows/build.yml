@@ -1,0 +1,35 @@
+name: CI
+on: { push: { branches: [master] } }
+permissions:
+  contents: write
+jobs:
+  build_android:
+    runs-on: ubuntu-18.04
+    defaults: { run: { shell: bash } }
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Clone Submodules
+        run: git submodule update --init --depth=1 --recursive
+      - name: Build APK
+        env: { GITHUB_TOKEN: "${{ github.token }}" }
+        run: |
+          git config --global user.name "Github Actions" && git config --global user.email "adamdharrison@gmail.com"
+          ./build.sh
+          if [[ `git tag --points-at HEAD | head -c 1` == "v" ]]; then
+            export VERSION=`git describe --tags --abbrev=0 --match "v*" | tail -c +2`
+            gh release delete -y v$VERSION || true;
+            gh release create -t v$VERSION v$VERSION *.apk
+            gh release delete -y latest || true;
+            gh release create -t latest latest *.apk
+            git branch -f latest HEAD
+            git tag -f latest
+            git push -f origin refs/heads/latest
+            git push -f origin refs/tags/latest
+          fi
+
