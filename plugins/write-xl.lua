@@ -65,7 +65,9 @@ core.reload_module('colors.word')
 config.plugins.autocomplete = false
 TreeView.visible = false
 config.highlight_current_line = false
-config.plugins.spellcheck.dictionary_file = USERDIR .. "/words"
+if system.get_file_info(USERDIR .. "/words") then
+  config.plugins.spellcheck.dictionary_file = USERDIR .. "/words"
+end
 config.plugins.language_c = false
 config.plugins.language_cpp = false
 config.plugins.language_css = false

@@ -10,41 +10,48 @@ local Doc = require "core.doc"
 -- Generated the synonym file from the supplied dictionary, with the following string.
 -- perl -e 'use File::Slurp; use JSON qw(encode_json from_json); my %words = (); map { my $json = from_json(scalar(read_file($_))); for (keys(%$json)) { $words{lc($_)} = [map { lc($_) } @{$json->{$_}->{SYNONYMS}}] } } (glob("*.json")); for my $key (grep { int(@{$words{$_}}) > 0 && $words{$_}->[0] ne $_ } sort(keys(%words))) { print $key . ":" . join(",", grep { $_ ne $key } @{$words{$key}}) . "\n"; }' > ../user/synonyms
 
+local synonym_file_locations = { USERDIR .. PATHSEP .. "synonyms", USERDIR .. PATHSEP .. "plugins" .. PATHSEP .. "synonyms" ..  PATHSEP .. "synonyms" }
+local autodetected_synonym_file = nil
+for i,v in ipairs(synonym_file_locations) do if system.get_file_info(v) then autodetected_synonym_file = v break end end
+
 config.plugins.synonyms = common.merge({
-  synonym_file = USERDIR .. "/synonyms"
+  synonym_file = autodetected_synonym_file
 }, config.plugins.synonyms)
 
 local synonyms = {}
 local word_pattern = "%a+"
 
-core.add_thread(function()
-  local i = 0
-  for line in io.lines(config.plugins.synonyms.synonym_file) do
-    local s = line:find(":")
-    local n = s
-    local word = line:sub(1, s - 1)
-    local t = {}
-    while true do
-      n = line:find(",", s + 1)
-      if n then
-        table.insert(t, line:sub(s + 1, n - 1))
-        s = n
-      else
-        table.insert(t, line:sub(s + 1, #line))
-        break
+if config.plugins.synonyms.synonym_file and system.get_file_info(config.plugins.synonyms.synonym_file) then
+  core.add_thread(function()
+    local i = 0
+    for line in io.lines(config.plugins.synonyms.synonym_file) do
+      local s = line:find(":")
+      local n = s
+      local word = line:sub(1, s - 1)
+      local t = {}
+      while true do
+        n = line:find(",", s + 1)
+        if n then
+          table.insert(t, line:sub(s + 1, n - 1))
+          s = n
+        else
+          table.insert(t, line:sub(s + 1, #line))
+          break
+        end
       end
+      synonyms[word] = t
+      i = i + 1
+      if i % 1000 == 0 then coroutine.yield() end
     end
-    synonyms[word] = t
-    i = i + 1
-    if i % 1000 == 0 then coroutine.yield() end
-  end
-  core.redraw = true
-  core.log_quiet(
-    "Finished loading synonym file: \"%s\"",
-    config.plugins.synonyms.synonym_file
-  )
-end)
-
+    core.redraw = true
+    core.log_quiet(
+      "Finished loading synonym file: \"%s\"",
+      config.plugins.synonyms.synonym_file
+    )
+  end)
+else
+  error("can't find synonyms list; please supply one with config.plugins.synonyms.synonym_file")
+end
 
 local function get_word_at_caret()
   local doc = core.active_view.doc
