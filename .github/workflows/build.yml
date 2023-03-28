@@ -19,8 +19,7 @@ jobs:
       - name: Startup
         run: |
           sudo apt-get install mingw-w64 libc6-dev-i386
-          ln -s lib/lite-xl-android/lib/lite-xl-simplified lib/lite-xl-simplified
-          gcc lib/lite-xl-simplified/resources/pack.c -o pack-data
+          gcc lib/lite-xl-android/lib/lite-xl-simplified/resources/pack.c -o pack-data
           echo "VERSION="`git describe HEAD --tags` >> $GITHUB_ENV
           echo "LPM_CACHE=/tmp/lpm" >> $GITHUB_ENV
           curl -L https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.x86_64-linux > lpm && chmod +x lpm
@@ -28,12 +27,12 @@ jobs:
       - name: Build Linux
         env: { PLATFORM: "x86_64-linux", BIN: "write-xl" }
         run: |
-          mkdir scratchpad && cp -rL lib/lite-xl-simplified scratchpad/lite-xl && ./lpm install write-xl --datadir scratchpad/lite-xl/data --userdir scratchpad/lite-xl/data --arch $PLATFORM && cd scratchpad/lite-xl
+          mkdir scratchpad && cp -rL lib/lite-xl-android/lib/lite-xl-simplified scratchpad/lite-xl && ./lpm install write-xl --datadir scratchpad/lite-xl/data --userdir scratchpad/lite-xl/data --arch $PLATFORM && cd scratchpad/lite-xl
           ../../pack-data data/* data/*/* data/*/*/* > src/data.c && ./build.sh -DLITE_VERSION='"'$VERSION-$PLATFORM'"' -DLITE_ALL_IN_ONE && tar -czvf ../../write-xl-$VERSION-$PLATFORM.tar.gz $BIN && cd ../.. && rm -rf scratchpad
       - name: Build Windows
         env: { PLATFORM: "x86_64-windows", CC: "x86_64-w64-mingw32-gcc", AR: "x86_64-w64-mingw32-gcc-ar", SDL_CONFIGURE: "--host=x86_64-w64-mingw32", BIN: "write-xl.exe" }
         run: |
-          mkdir scratchpad && cp -rL lib/lite-xl-simplified scratchpad/lite-xl && ./lpm install write-xl --userdir scratchpad/lite-xl/data --arch $PLATFORM && cd scratchpad/lite-xl
+          mkdir scratchpad && cp -rL lib/lite-xl-android/lib/lite-xl-simplified scratchpad/lite-xl && ./lpm install write-xl --userdir scratchpad/lite-xl/data --arch $PLATFORM && cd scratchpad/lite-xl
           ../../pack-data data/* data/*/* data/*/*/* > src/data.c && ./build.sh -DLITE_VERSION='"'$VERSION-$PLATFORM'"' -DLITE_ALL_IN_ONE && zip ../../write-xl-$VERSION-$PLATFORM.zip $BIN && cd ../.. && rm -rf scratchpad
       - name: Build APK
         run: |
