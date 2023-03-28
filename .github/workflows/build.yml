@@ -1,9 +1,9 @@
 name: CI
-on: { push: { branches: [master] } }
+on: { push: { branches: [main] } }
 permissions:
   contents: write
 jobs:
-  build_android:
+  build:
     runs-on: ubuntu-18.04
     defaults: { run: { shell: bash } }
     steps:
@@ -38,7 +38,7 @@ jobs:
       - name: Build APK
         run: |
           ./build.sh
-       - name: Create Release
+      - name: Create Release
         env: { GITHUB_TOKEN: "${{ github.token }}" }
         run: |
           git config --global user.name "Github Actions" && git config --global user.email "adamdharrison@gmail.com"
