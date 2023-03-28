@@ -437,16 +437,20 @@
     </page>
     <script type='text/javascript'>
       var download;
-      if (window.navigator.userAgent.indexOf("Windows")!= -1) {
-        download = { platform: "Windows 64-Bit", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-windows.zip" }
+      if (window.navigator.userAgent.indexOf("Windows") != -1) {
+        download = { platform: "Windows 64-bit (x86_64)", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-windows.zip" };
       } else if (window.navigator.userAgent.indexOf("Mac") != -1) {
-        // download = { platform: "Mac 64-Bit (x86)", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-darwin.tar.gz" }
+        // download = { platform: "Mac 64-bit (x86)", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-darwin.tar.gz" };
       } else if (window.navigator.userAgent.indexOf("X11") != -1 || window.navigator.userAgent.indexOf("Linux") != -1) {
-        download = { platform: "Linux 64-Bit (x86)", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-linux.tar.gz" }
+        if (window.navigator.userAgent.indexOf("x86_64") != -1) {
+          download = { platform: "Linux 64-bit (x86_64)", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-linux.tar.gz" };
+        } else {
+          // download = { platform: "Linux 32-bit (x86)", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-linux.tar.gz" };
+        }
       } else if (window.navigator.userAgent.indexOf("Android") != -1) {
-        download = { platform: "Android", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl.apk" }
+        download = { platform: "Android", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl.apk" };
       } 
-      if (download){
+      if (download) {
         document.querySelector('#download .button').classList.add('direct');
         document.querySelector('#download .button badge').classList.add(download.platform.split(/\s+/)[0].toLowerCase());
         document.querySelector('#download .button').setAttribute('href', download.url);
