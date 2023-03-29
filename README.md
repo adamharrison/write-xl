@@ -25,7 +25,6 @@
 * Small clock that tracks current session time.
 * Small clcok that tracks actual writing time.
 * Ability to have a view of a chapter as an individual document (`ChapterView`, inherited from DocView).
-*
 
 ## Install
 
@@ -37,3 +36,4 @@ lpm install write-xl
 
 Or, alternatively, simply copy the plugins in the `plugins` folder, and the colors from the `colors` folder into your local copies of both, and install a few extra plugins from lite-xl-plugins.
 
+Or, you can simply pull an all-in-one-release from the [releases](https://github.com/adamharrison/write-xl/releases) page.
