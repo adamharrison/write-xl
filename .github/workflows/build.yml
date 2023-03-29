@@ -42,8 +42,8 @@ jobs:
           git config --global user.name "Github Actions" && git config --global user.email "adamdharrison@gmail.com"
           gh release delete -y continuous || true; gh release create -t 'Continuous Release' -n 'A continuous release of write-xl. See the README for more details.' continuous  *.zip *.tar.gz *.apk
           if [[ `git tag --points-at HEAD | head -c 1` == "v" ]]; then
-            gh release delete -y v$VERSION || true;
-            gh release create -t v$VERSION v$VERSION *.apk *.zip *.tar.gz
+            gh release delete -y $VERSION || true;
+            gh release create -t $VERSION $VERSION *.apk *.zip *.tar.gz
             gh release delete -y latest || true;
             gh release create -t latest latest *.apk *.zip *.tar.gz
             git branch -f latest HEAD
