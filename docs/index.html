@@ -442,6 +442,8 @@
       var download;
       if (window.navigator.userAgent.indexOf("Windows") != -1) {
         download = { platform: "Windows 64-bit (x86_64)", size: "3.2mb", url: "https://github.com/adamharrison/write-xl/releases/download/latest/write-xl-x86_64-windows.zip" };
+      } else if (window.navigator.userAgent.indexOf("Android") != -1) {
+        download = { platform: "Android", size: "10.5mb", url: "https://github.com/adamharrison/write-xl/releases/download/latest/write-xl.apk" };
       } else if (window.navigator.userAgent.indexOf("Mac") != -1) {
         // download = { platform: "Mac 64-bit (x86)", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-darwin.tar.gz" };
       } else if (window.navigator.userAgent.indexOf("X11") != -1 || window.navigator.userAgent.indexOf("Linux") != -1) {
@@ -450,8 +452,6 @@
         } else {
           // download = { platform: "Linux 32-bit (x86)", size: "4mb", url: "https://github.com/adamharrison/write-xl/releases/latest/write-xl-x86_64-linux.tar.gz" };
         }
-      } else if (window.navigator.userAgent.indexOf("Android") != -1) {
-        download = { platform: "Android", size: "10.5mb", url: "https://github.com/adamharrison/write-xl/releases/download/latest/write-xl.apk" };
       } 
       if (download) {
         document.querySelector('#download .button').classList.add('direct');
