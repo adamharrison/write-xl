@@ -32,7 +32,7 @@ jobs:
       - name: Build Windows
         env: { PLATFORM: "x86_64-windows", CC: "x86_64-w64-mingw32-gcc", AR: "x86_64-w64-mingw32-gcc-ar", SDL_CONFIGURE: "--host=x86_64-w64-mingw32", BIN: "write-xl.exe" }
         run: |
-          mkdir scratchpad && cp -rL lib/lite-xl-android/lib/lite-xl-simplified scratchpad/lite-xl && ./lpm install write-xl --userdir scratchpad/lite-xl/data --arch $PLATFORM && cd scratchpad/lite-xl
+          mkdir scratchpad && cp -rL lib/lite-xl-android/lib/lite-xl-simplified scratchpad/lite-xl && ./lpm install write-xl --datadir scratchpad/lite-xl/data --userdir scratchpad/lite-xl/data --arch $PLATFORM --quiet && cd scratchpad/lite-xl
           ./build.sh -DLITE_VERSION='"'$VERSION-$PLATFORM'"' -DLITE_ALL_IN_ONE $DEFAULT_FLAGS && zip ../../write-xl-$PLATFORM.zip $BIN && cd ../.. && rm -rf scratchpad
       - name: Build APK
         run: |
