@@ -7,12 +7,14 @@ local core = require "core"
 local keymap = require "core.keymap"
 local config = require "core.config"
 local style = require "core.style"
+local syntax = require "core.syntax"
 local common = require "core.common"
 local DocView = require "core.docview"
 local command = require "core.command"
 local TreeView = require "plugins.treeview"
 local keymap = require "core.keymap"
 local EmptyView = require "core.emptyview"
+local Doc = require "core.doc"
 
 
 local function draw_text(x, y, color)
@@ -86,6 +88,21 @@ config.plugins.linewrapping = {
 }
 config.plugins.tag_highlight = false
 config.transitions = false
+-- override reset syntax to force all docs to be markdown.
+Doc.reset_syntax = function(self)
+  local header = self:get_text(1, 1, self:position_offset(1, 1, 128))
+  local syn = syntax.get(self.filename or ".md", header)
+  if self.syntax ~= syn then
+    self.syntax = syn
+    self.highlighter:soft_reset()
+  end
+end
+local old_doc_new = Doc.new
+Doc.new = function(self, ...)
+  local result = old_doc_new(self, ...)
+  self:reset_syntax()
+  return result
+end
 
 function DocView:draw_line_gutter(line, x, y, width)
   if self.size.x > document_width then
