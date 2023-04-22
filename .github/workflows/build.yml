@@ -19,7 +19,7 @@ jobs:
         run: git submodule update --init --depth=1 --recursive
       - name: Startup
         run: |
-          sudo apt-get install mingw-w64 libc6-dev-i386
+          sudo apt-get install mingw-w64 libc6-dev-i386 wamerican
           export VERSION=`git describe HEAD --tags` && echo "VERSION=$VERSION" >> $GITHUB_ENV
           curl -L https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.x86_64-linux > lpm && chmod +x lpm
           ./lpm init --quiet && ./lpm add . https://github.com/adamharrison/lite-xl-libgit2 --quiet
