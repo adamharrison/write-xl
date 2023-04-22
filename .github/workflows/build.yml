@@ -23,7 +23,7 @@ jobs:
           export VERSION=`git describe HEAD --tags` && echo "VERSION=$VERSION" >> $GITHUB_ENV
           curl -L https://github.com/lite-xl/lite-xl-plugin-manager/releases/download/latest/lpm.x86_64-linux > lpm && chmod +x lpm
           ./lpm init --quiet && ./lpm add . https://github.com/adamharrison/lite-xl-libgit2 --quiet
-          cp -r resources lib/lite-xl-android/lib/lite-xl-simplified
+          cp -r resources lib/lite-xl-android/lib/lite-xl-simplified && cp /usr/share/dict/words lib/lite-xl-android/lib/lite-xl-simplified/data/words
       - name: Build Linux
         env: { PLATFORM: "x86_64-linux", BIN: "write-xl" }
         run: |

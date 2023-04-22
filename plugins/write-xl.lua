@@ -67,6 +67,8 @@ TreeView.visible = false
 config.highlight_current_line = false
 if system.get_file_info(USERDIR .. "/words") then
   config.plugins.spellcheck.dictionary_file = USERDIR .. "/words"
+elseif system.get_file_info(DATADIR .. "/words") then
+  config.plugins.spellcheck.dictionary_file = DATADIR .. "/words"
 end
 config.plugins.language_c = false
 config.plugins.language_cpp = false
