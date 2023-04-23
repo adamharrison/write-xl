@@ -12,11 +12,11 @@ local function doc() return core.active_view.doc end
 
 local function toggle_selection(delimiter, idx, line1, col1, line2, col2)
   local inverted, remove, fline, fcol, lline, lcol = line1 > line2 or (line1 == line2 and col1 > col2)
-  if inverted then 
+  if inverted then
     fline, fcol = inverted and line2 or line1, inverted and col2 or col1
     lline, lcol = inverted and line1 or line2, inverted and col1 or col2
-    remove = 
-      doc().lines[fline]:sub(fcol, fcol + #delimiter - 1) == delimiter and 
+    remove =
+      doc().lines[fline]:sub(fcol, fcol + #delimiter - 1) == delimiter and
       lcol >= #delimiter and doc().lines[lline]:sub(lcol - #delimiter, lcol - 1) == delimiter
     local shift = #delimiter * (remove and -2 or 2)
     print("SHIFT", shift)
@@ -36,13 +36,15 @@ local function toggle_selection(delimiter, idx, line1, col1, line2, col2)
 end
 
 command.add(DocView, {
-  ["write-xl:bold"] = function() 
+  ["write-xl:bold"] = function()
     for idx, line1, col1, line2, col2 in doc():get_selections(false) do
       toggle_selection("**", idx, line1, col1, line2, col2)
     end
   end,
-  ["write-xl:italicize"] = function() 
-    toggle_selection("*", idx, line1, col1, line2, col2)
+  ["write-xl:italicize"] = function()
+    for idx, line1, col1, line2, col2 in doc():get_selections(false) do
+      toggle_selection("*", idx, line1, col1, line2, col2)
+    end
   end
 })
 
