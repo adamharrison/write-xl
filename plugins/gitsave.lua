@@ -94,8 +94,12 @@ local function ask_repo_for_directory(clone)
       core.command_view:enter("Remote to add?", {
         submit = function(remote_url)
           extant_gits[directory] = git.open(directory, config.plugins.gitsave)
+          if clone then
+            fetch_and_merge(extant_gits[directory], { remote_url = remote_url })
+          else
+            extant_gits[directory]:remote("origin", remote_url)
+          end
           core.log("Succesfully added repository to %s.", directory)
-          if clone then fetch_and_merge(extant_gits[directory], { remote_url = remote_url }) end
         end
       })
     end,

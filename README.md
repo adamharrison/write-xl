@@ -37,3 +37,11 @@ lpm install write-xl
 Or, alternatively, simply copy the plugins in the `plugins` folder, and the colors from the `colors` folder into your local copies of both, and install a few extra plugins from lite-xl-plugins.
 
 Or, you can simply pull an all-in-one-release from the [releases](https://github.com/adamharrison/write-xl/releases) page.
+
+### Releases
+
+The non-mobile releases for `write-xl` are pre-built with [`lite-xl-simplified`](https://github.com/adamharrison/lite-xl-simplified)'s all-in-one mode, meaning that it will be created as a single executable,
+that uses `~/.config/write-xl` as its user directory, with the `write-xl` plugin installed.
+
+The mobile releases for `write-xl` are built with [`lite-xl-android`](https://github.com/adamharrison/lite-xl-android), for `x86`, `x86_64`, `arm64` and `armv7`, and should function out of the box on most
+android phones.

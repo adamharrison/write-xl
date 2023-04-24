@@ -13,8 +13,13 @@
 				"chapters",
 				"wordcount",
 				"formatting",
+				"sessionclock",
 				"word"
 			]
+		},
+		{
+			"id": "sessionclock",
+			"description": "Displays the time of your current session, and active time of your current session in the status bar."
 		},
 		{
 			"id": "word",
