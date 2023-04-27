@@ -14,12 +14,17 @@
 				"wordcount",
 				"formatting",
 				"sessionclock",
+				"autocorrect",
 				"word"
 			]
 		},
 		{
 			"id": "sessionclock",
 			"description": "Displays the time of your current session, and active time of your current session in the status bar."
+		},
+		{
+			"id": "autocorrect",
+			"description": "Checks for words as you type, and replaces them with other words, based on a list you provide."
 		},
 		{
 			"id": "word",

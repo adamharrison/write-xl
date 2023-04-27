@@ -13,6 +13,9 @@
 * Ability use git quicly and easily to track changes, and to provide a method of remote synchroniation.
 * Word Counter
 * Small clock in the bottom right corner.
+* Small clock that tracks current session time.
+* Small clock that tracks actual writing time.
+* Autocorrect plugin that corrects-as-you-type to a preset list of words, or to a dictionary.
 
 ## TODO
 
@@ -22,8 +25,6 @@
 * Side-by-Side Outline Reading
 * A plugin to detect whether you're overusing a particular phrase.
 * Character Registry, with Minimap
-* Small clock that tracks current session time.
-* Small clcok that tracks actual writing time.
 * Ability to have a view of a chapter as an individual document (`ChapterView`, inherited from DocView).
 
 ## Install
