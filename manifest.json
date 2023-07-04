@@ -48,5 +48,8 @@
 			"id": "formatting",
 			"description": "Provides automatic shortcuts, and a toolbar to manage the formatting of a markdown docview. Part of the write-xl project."
 		}
+	],
+	"remotes": [
+		"https://github.com/adamharrison/lite-xl-libgit2.git:main"
 	]
 }
